@@ -1,0 +1,149 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<html>
+<head>
+    <script type="text/javascript">
+        function draw() {
+        }
+
+        window.requestAnimFrame = (function(callback){
+            return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback){
+                window.setTimeout(callback, 1000 / 60);
+            };
+        })();
+
+        function getMousePos(canvas, evt){
+            // get canvas position
+            var obj = canvas;
+            var top = 0;
+            var left = 0;
+            while (obj.tagName != 'BODY') {
+                top += obj.offsetTop;
+                left += obj.offsetLeft;
+                obj = obj.offsetParent;
+            }
+            
+            // return relative mouse position
+            var mouseX = evt.clientX - left + window.pageXOffset;
+            var mouseY = evt.clientY - top + window.pageYOffset;
+            return {
+                x: mouseX,
+                y: mouseY
+            };
+        }
+        
+        function drawCrossHair(canvas, mouse){
+        
+            if (mouse.pos.x && mouse.pos.y) {
+                var context = canvas.getContext("2d");
+                
+                var crossHairSize = 5;
+                
+                var mouseX = mouse.pos.x;
+                var mouseY = mouse.pos.y;
+                
+                context.beginPath();
+                context.globalAlpha = 1;
+                context.moveTo(mouseX, mouseY - crossHairSize );
+                context.lineTo(mouseX, mouseY + crossHairSize );
+                context.strokeStyle = "black";
+                context.lineWidth = 2;
+                context.stroke();
+                
+                context.beginPath();
+                context.moveTo(mouseX - crossHairSize, mouseY);
+                context.lineTo(mouseX + crossHairSize, mouseY);
+                context.strokeStyle = "black";
+                context.lineWidth = 2;
+                context.stroke();
+            }
+        }
+
+        function drawScene(canvas, mouse){
+            context = canvas.getContext("2d");
+            
+            // Draw a red, opaque square
+            context.fillStyle = "rgb(200,0,0)";
+            context.fillRect (10, 10, 55, 50);
+
+            // Draw a 50% translucent blue square partially overlapping the red square
+            context.fillStyle = "rgba(0, 0, 200, 0.5)";
+            context.fillRect (30, 30, 55, 50);
+
+            context.beginPath();
+
+            // Draw some black lines
+            //context.moveTo(100, 150);
+            //context.lineTo(200, 100);
+            //context.lineTo(250, 120);
+            //context.stroke();
+            //context.lineTo(170, 140);
+            //context.stroke();
+            
+            // Draw a line from (50,50) to the current mouse pos
+            context.moveTo(50,50);
+            context.lineTo(mouse.pos.x,mouse.pos.y);
+            context.stroke();
+        }
+
+        // Render the frame
+        function animate(canvas, mouse, lastTime){
+            context = canvas.getContext("2d");
+            
+            // update
+            var date = new Date();
+            var time = date.getTime();
+            var timeDiff = time - lastTime;
+            //updateParticles(canvas, particles, timeDiff, mouse, crossHairRadius);
+            
+            context.save();
+            
+            // clear
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // draw
+            //drawParticles(canvas, particles, imageObj);
+            //drawCrossHair(canvas, mouse, crossHairRadius);
+            drawScene(canvas, mouse);
+            
+            drawCrossHair(canvas, mouse);
+            
+            context.restore();
+            
+            // request new frame
+            requestAnimFrame(function(){
+                animate(canvas, mouse, time);
+            });
+        }
+        
+        window.onload = function(){
+            var canvas = document.getElementById("canvas");
+            
+            var mouse = {
+                pos: {},
+                down: false
+            };
+            
+            
+            canvas.addEventListener("mousemove", function(evt){
+                var pos = getMousePos(canvas, evt);
+                mouse.pos.x = pos.x;
+                mouse.pos.y = pos.y;
+            });
+            
+            var date = new Date();
+            var time = date.getTime();
+
+            animate( canvas, mouse, time );
+        }
+        
+    </script>
+</head>
+<body onmousedown="return false;">
+    <canvas id="canvas" width="500" height="500"></canvas>
+</body>
+</html>

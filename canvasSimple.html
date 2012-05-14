@@ -66,23 +66,7 @@
         function drawScene(canvas, mouse){
             context = canvas.getContext("2d");
             
-            // Draw a red, opaque square
-            context.fillStyle = "rgb(200,0,0)";
-            context.fillRect (10, 10, 55, 50);
-
-            // Draw a 50% translucent blue square partially overlapping the red square
-            context.fillStyle = "rgba(0, 0, 200, 0.5)";
-            context.fillRect (30, 30, 55, 50);
-
             context.beginPath();
-
-            // Draw some black lines
-            //context.moveTo(100, 150);
-            //context.lineTo(200, 100);
-            //context.lineTo(250, 120);
-            //context.stroke();
-            //context.lineTo(170, 140);
-            //context.stroke();
             
             // Draw a line from (50,50) to the current mouse pos
             context.moveTo(50,50);

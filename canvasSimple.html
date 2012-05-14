@@ -36,6 +36,17 @@
             };
         }
         
+        function updateObjects(canvas, mouse){
+            if( mouse.down )
+            {
+                // Call the mouse down function of the current tool object
+                // 
+                
+                // Reset the mouse down variable
+                mouse.down = false;
+            }
+        }
+        
         function drawCrossHair(canvas, mouse){
         
             if (mouse.pos.x && mouse.pos.y) {
@@ -75,14 +86,11 @@
         }
 
         // Render the frame
-        function animate(canvas, mouse, lastTime){
+        function animate(canvas, mouse){
             context = canvas.getContext("2d");
             
             // update
-            var date = new Date();
-            var time = date.getTime();
-            var timeDiff = time - lastTime;
-            //updateParticles(canvas, particles, timeDiff, mouse, crossHairRadius);
+            updateObjects(canvas, mouse );
             
             context.save();
             
@@ -90,8 +98,6 @@
             context.clearRect(0, 0, canvas.width, canvas.height);
             
             // draw
-            //drawParticles(canvas, particles, imageObj);
-            //drawCrossHair(canvas, mouse, crossHairRadius);
             drawScene(canvas, mouse);
             
             drawCrossHair(canvas, mouse);
@@ -100,7 +106,7 @@
             
             // request new frame
             requestAnimFrame(function(){
-                animate(canvas, mouse, time);
+                animate(canvas, mouse);
             });
         }
         
@@ -112,6 +118,9 @@
                 down: false
             };
             
+            canvas.addEventListener("click", function(){
+                mouse.down = true;
+            }, false);
             
             canvas.addEventListener("mousemove", function(evt){
                 var pos = getMousePos(canvas, evt);
@@ -129,5 +138,8 @@
 </head>
 <body onmousedown="return false;">
     <canvas id="canvas" width="500" height="500"></canvas>
+    <div class="ToolHeaderProperty">Tool</div>
+    <div class="ToolProperty">  <input id="radioToolLine" type="radio" name="Tool" checked />Line</div>
+    <div class="ToolProperty">  <input id="radioToolArc" type="radio" name="Tool" />Arc</div>
 </body>
 </html>
